@@ -11,6 +11,24 @@ const pool = new Pool({
 // Parser
 app.use(express.json());
 
+
+const initDB = async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS users(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(20) UNIQUE NOT NULL,
+        age INT,
+        phone VARCHAR(15),
+        address TEXT,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+        )
+    `)
+}
+
+initDB();
+
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello Boss! Welcome to the server. Next level')
 });
