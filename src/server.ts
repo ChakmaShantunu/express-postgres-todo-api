@@ -82,6 +82,25 @@ app.post("/users", async (req: Request, res: Response) => {
 
 });
 
+app.get("/users", async (req: Request, res: Response) => {
+    try {
+
+        const result = await pool.query(`SELECT name, email, role, age, phone, address, is_active FROM users`);
+
+        res.status(200).json({
+            success: true,
+            message: "User retrieved successfully",
+            data: result.rows
+        })
+
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+})
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
