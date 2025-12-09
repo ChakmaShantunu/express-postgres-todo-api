@@ -1,5 +1,5 @@
 import express, { request, Request, Response } from "express";
-import { Pool } from "pg"
+import { Pool, Result } from "pg"
 import dotenv from "dotenv"
 import path from "path"
 
@@ -60,13 +60,26 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello Boss! Welcome to the server. Next level')
 });
 
-app.post("/", (req: Request, res: Response) => {
-    console.log(req.body);
+app.post("/users", async (req: Request, res: Response) => {
 
-    res.status(201).json({
-        success: true,
-        message: "API is working"
-    })
+    const { name, email, password, role, age, phone, address } = req.body;
+
+    try {
+
+        const result = await pool.query(`INSERT INTO users(name, email, password, role, age, phone, address) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING name, email, role, age`, [name, email, password, role, age, phone, address]);
+
+        res.status(201).json({
+            success: true,
+            message: "User inserted successfully",
+            data: result.rows[0]
+        })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+
 });
 
 app.listen(port, () => {
