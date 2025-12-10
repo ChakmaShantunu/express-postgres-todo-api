@@ -190,7 +190,7 @@ app.post("/todos", async (req: Request, res: Response) => {
             message: "user_id and title are required"
         })
     }
-    
+
     try {
         const result = await pool.query(`INSERT INTO todos(user_id, title) VALUES($1, $2) RETURNING user_id, title`, [user_id, title]);
 
@@ -209,6 +209,22 @@ app.post("/todos", async (req: Request, res: Response) => {
     }
 });
 
+app.get("/todos", async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query(`SELECT id, user_id, title, completed, priority, status, due_date FROM todos`);
+
+        res.status(200).json({
+            success: true,
+            message: "Todo retrieved successfully",
+            data: result.rows
+        })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
