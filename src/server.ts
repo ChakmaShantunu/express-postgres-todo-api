@@ -99,7 +99,12 @@ app.get("/users", async (req: Request, res: Response) => {
             message: err.message
         })
     }
-})
+});
+
+app.get("/users/:id", async (req: Request, res: Response) => {
+    console.log(req.params.id);
+    res.send({ message: "Api is working" });
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
