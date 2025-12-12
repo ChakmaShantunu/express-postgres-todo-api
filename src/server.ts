@@ -24,53 +24,6 @@ app.get('/', logger, (req: Request, res: Response) => {
 app.use("/users", userRoutes);
 
 
-app.get("/users", async (req: Request, res: Response) => {
-    try {
-
-        const result = await pool.query(`SELECT id, name, email, role, age, phone, address, is_active FROM users`);
-
-        res.status(200).json({
-            success: true,
-            message: "User retrieved successfully",
-            data: result.rows
-        })
-
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-});
-
-app.get("/users/:id", async (req: Request, res: Response) => {
-
-    try {
-
-        const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [req.params.id as string]);
-        console.log(result.rows);
-
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                success: false,
-                message: "User not found"
-            })
-        } else {
-            res.status(200).json({
-                success: true,
-                message: "User retrived successfully",
-                data: result.rows[0]
-            })
-        }
-
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-});
-
 app.put("/users/:id", async (req: Request, res: Response) => {
 
     const { name, email } = req.body;

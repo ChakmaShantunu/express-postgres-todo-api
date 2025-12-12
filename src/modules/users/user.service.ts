@@ -14,10 +14,18 @@ const getUser = async () => {
     const result = await pool.query(`SELECT id, name, email, role, age, phone, address, is_active FROM users`);
 
     return result;
-}
+};
+
+const getSingleUser = async (id: string) => {
+
+    const result = await pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
+
+    return result;
+};
 
 
 export const userService = {
     createUser,
-    getUser
+    getUser,
+    getSingleUser
 }
