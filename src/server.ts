@@ -1,6 +1,8 @@
 import express, { NextFunction, request, Request, Response } from "express";
 import config from "./config";
 import initDB, { pool } from "./config/db";
+import logger from "./middleware/logger";
+import { userRoutes } from "./modules/users/user.routes";
 
 
 const app = express()
@@ -13,36 +15,14 @@ app.use(express.json());
 
 initDB();
 
-const logger = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(`${new Date().toISOString()} ${req.method} ${req.path}\n`);
-    next();
-};
+
 
 app.get('/', logger, (req: Request, res: Response) => {
     res.send('Hello Boss! Welcome to the server. Next level')
 });
 
-app.post("/users", async (req: Request, res: Response) => {
+app.use("/users", userRoutes);
 
-    const { name, email, password, role, age, phone, address } = req.body;
-
-    try {
-
-        const result = await pool.query(`INSERT INTO users(name, email, password, role, age, phone, address) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING name, email, role, age`, [name, email, password, role, age, phone, address]);
-
-        res.status(201).json({
-            success: true,
-            message: "User inserted successfully",
-            data: result.rows[0]
-        })
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-
-});
 
 app.get("/users", async (req: Request, res: Response) => {
     try {
