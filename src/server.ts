@@ -27,23 +27,6 @@ app.use("/users", userRoutes);
 app.use("/todos", todoRoutes);
 
 
-app.get("/todos", async (req: Request, res: Response) => {
-    try {
-        const result = await pool.query(`SELECT id, user_id, title, completed, priority, status, due_date FROM todos`);
-
-        res.status(200).json({
-            success: true,
-            message: "Todo retrieved successfully",
-            data: result.rows
-        })
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-});
-
 app.put("/todos/:id", async (req: Request, res: Response) => {
     const { title, completed } = req.body;
     try {

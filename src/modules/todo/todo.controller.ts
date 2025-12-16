@@ -19,8 +19,26 @@ const createTodo = async (req: Request, res: Response) => {
             message: err.message
         })
     }
-}
+};
+
+const getTodo = async (req: Request, res: Response) => {
+    try {
+        const result = await todoService.getTodo();
+
+        res.status(200).json({
+            success: true,
+            message: "Todo retrieved successfully",
+            data: result.rows
+        })
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+};
 
 export const todoController = {
-    createTodo
+    createTodo,
+    getTodo
 }
